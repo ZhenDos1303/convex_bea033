@@ -58,13 +58,13 @@ class TkDrawer:
         angle = math.atan2(point2.y - point1.y, point2.x - point1.x)
         # Make new points with shift
         point1_bottom = R2Point(
-            point1.x + math.cos(angle), point1.y - math.sin(angle))
-        point1_top = R2Point(point1.x - math.cos(angle),
-                             point1.y + math.sin(angle))
+            point1.x + math.sin(angle), point1.y - math.cos(angle))
+        point1_top = R2Point(point1.x - math.sin(angle),
+                             point1.y + math.cos(angle))
         point2_bottom = R2Point(
-            point2.x + math.cos(angle), point2.y - math.sin(angle))
-        point2_top = R2Point(point2.x - math.cos(angle),
-                             point2.y + math.sin(angle))
+            point2.x + math.sin(angle), point2.y - math.cos(angle))
+        point2_top = R2Point(point2.x - math.sin(angle),
+                             point2.y + math.cos(angle))
         # Draw the top and bottom lines with corresponding shift
         self.canvas.create_line(x(point1_bottom), y(point1_bottom), x(
             point2_bottom), y(point2_bottom), fill="red", width=2)
