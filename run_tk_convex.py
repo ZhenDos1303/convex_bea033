@@ -39,6 +39,7 @@ try:
         f = f.add(R2Point())
         tk.clean()
         f.draw(tk)
+        tk.draw_neighborhood_of_the_segment(R2Point(x1, y1), R2Point(x2, y2))
         print(f"S = {f.area()}, P = {f.perimeter()},")
         print(f"Local segments: {f.local_segments()}\n")
 except (EOFError, KeyboardInterrupt):

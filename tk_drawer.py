@@ -1,4 +1,6 @@
 from tkinter import *
+from r2point import R2Point
+import math
 
 # Размер окна
 SIZE = 600
@@ -51,9 +53,42 @@ class TkDrawer:
         self.canvas.create_line(x(p), y(p), x(q), y(q), fill="black", width=2)
         self.root.update()
 
+    def draw_neighborhood_of_the_segment(self, point1, point2):
+        # Calculate the angle of the segment
+        angle = math.atan2(point2.y - point1.y, point2.x - point1.x)
+        # Make new points with shift
+        point1_bottom = R2Point(
+            point1.x + math.cos(angle), point1.y - math.sin(angle))
+        point1_top = R2Point(point1.x - math.cos(angle),
+                             point1.y + math.sin(angle))
+        point2_bottom = R2Point(
+            point2.x + math.cos(angle), point2.y - math.sin(angle))
+        point2_top = R2Point(point2.x - math.cos(angle),
+                             point2.y + math.sin(angle))
+        # Draw the top and bottom lines with corresponding shift
+        self.canvas.create_line(x(point1_bottom), y(point1_bottom), x(
+            point2_bottom), y(point2_bottom), fill="red", width=2)
+        self.canvas.create_line(x(point1_top), y(point1_top), x(
+            point2_top), y(point2_top), fill="red", width=2)
+        # Calculate start and end angles for arc
+        start_angle = (angle + math.pi / 2) / math.pi * 180
+        if start_angle < 0:
+            start_angle += 360
+        end_angle = (angle - math.pi / 2) / math.pi * 180
+        if end_angle < 0:
+            end_angle += 360
+
+        point1_start = R2Point(point1.x + 1, point1.y + 1)
+        point1_end = R2Point(point1.x - 1, point1.y - 1)
+        self.canvas.create_arc(x(point1_start), y(point1_start), x(point1_end), y(point1_end),
+                               start=start_angle, extent=180, style='arc', outline='red', width=2)
+        point2_start = R2Point(point2.x + 1, point2.y + 1)
+        point2_end = R2Point(point2.x - 1, point2.y - 1)
+        self.canvas.create_arc(x(point2_start), y(point2_start), x(point2_end), y(point2_end),
+                               start=end_angle, extent=180, style='arc', outline='red', width=2)
+
 
 if __name__ == "__main__":
-
     import time
     from r2point import R2Point
     tk = TkDrawer()
