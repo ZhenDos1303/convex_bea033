@@ -30,6 +30,9 @@ class TestVoid:
     def test_add(self):
         assert isinstance(self.f.add(R2Point(0.0, 0.0)), Point)
 
+    def test_local(self):
+        assert self.f.local_segments() == 0
+
 
 class TestPoint:
 
@@ -60,6 +63,9 @@ class TestPoint:
     # При добавлении точки одноугольник может превратиться в двуугольник
     def test_add2(self):
         assert isinstance(self.f.add(R2Point(1.0, 0.0)), Segment)
+
+    def test_local(self):
+        assert self.f.local_segments() == 0
 
 
 class TestSegment:
@@ -96,16 +102,23 @@ class TestSegment:
     def test_add2(self):
         assert isinstance(self.f.add(R2Point(0.0, 1.0)), Polygon)
 
+    def test_local(self):
+        self.f.segment(R2Point(0.0, 0.0), R2Point(1.0, 0.0))
+        assert self.f.local_segments() == 1
+
+    def test_local2(self):
+        self.f.segment(R2Point(0.0, 1.0), R2Point(1.0, 1.0))
+        assert self.f.local_segments() == 1
+        self.f = self.f.add(R2Point(10.0, 0.0))
+        assert self.f.local_segments() == 0
+
 
 class TestPolygon:
 
     # Инициализация (выполняется для каждого из тестов класса)
     def setup_method(self):
-        self.f = Polygon(
-            R2Point(
-                0.0, 0.0), R2Point(
-                1.0, 0.0), R2Point(
-                0.0, 1.0))
+        self.f = Polygon(R2Point(0.0, 0.0), R2Point(
+            1.0, 0.0), R2Point(0.0, 1.0))
 
     # Многоугольник является фигурой
     def test_figure(self):
@@ -130,19 +143,8 @@ class TestPolygon:
     #   изменения выпуклой оболочки могут и уменьшать их количество
 
     def test_vertexes4(self):
-        assert self.f.add(
-            R2Point(
-                0.4,
-                1.0)).add(
-            R2Point(
-                1.0,
-                0.4)).add(
-                    R2Point(
-                        0.8,
-                        0.9)).add(
-                            R2Point(
-                                0.9,
-                                0.8)).points.size() == 7
+        assert self.f.add(R2Point(0.4, 1.0)).add(R2Point(1.0, 0.4)).add(
+            R2Point(0.8, 0.9)).add(R2Point(0.9, 0.8)).points.size() == 7
         assert self.f.add(R2Point(2.0, 2.0)).points.size() == 4
 
     # Изменение периметра многоугольника
@@ -162,3 +164,29 @@ class TestPolygon:
 
     def test_area2(self):
         assert self.f.add(R2Point(1.0, 1.0)).area() == approx(1.0)
+
+    def test_local1(self):
+        self.f.segment(R2Point(0.0, 0.0), R2Point(2.0, 0.0))
+        self.f = self.f.add(R2Point(0.0, 1.0))
+        self.f = self.f.add(R2Point(1.0, 1.0))
+        self.f = self.f.add(R2Point(1.0, -1.0))
+        self.f = self.f.add(R2Point(0.0, -1.0))
+        assert self.f.local_segments() == 4
+
+    def test_local2(self):
+        self.f.segment(R2Point(0.0, 0.0), R2Point(2.0, 0.0))
+        self.f = self.f.add(R2Point(0.0, 1.0))
+        self.f = self.f.add(R2Point(1.0, 1.0))
+        self.f = self.f.add(R2Point(1.0, -1.0))
+        self.f = self.f.add(R2Point(0.0, -1.0))
+        self.f = self.f.add(R2Point(3.0, 3.0))
+        assert self.f.local_segments() == 2
+
+    def test_local3(self):
+        self.f.segment(R2Point(0.0, 0.0), R2Point(2.0, 1.0))
+        self.f = self.f.add(R2Point(1.0, 2.5))
+        self.f = self.f.add(R2Point(-2.0, -3.0))
+        self.f = self.f.add(R2Point(-1.0, -1.0))
+        self.f = self.f.add(R2Point(-1.0, -1.0))
+        self.f = self.f.add(R2Point(1.9, 1.0))
+        assert self.f.local_segments() == 1

@@ -70,3 +70,44 @@ class TestR2Point:
     def test_is_light4(self):
         a, b = R2Point(0.0, 0.0), R2Point(1.0, 0.0)
         assert R2Point(0.5, -0.5).is_light(a, b) is True
+
+    # Проверка, лежит ли точка в окрестностях отрезка
+    def test_get_distance_to_segment1(self):
+        a, b = R2Point(0.0, 0.0), R2Point(1.0, 0.0)
+        p = R2Point(0.5, 1.0)
+        assert p.get_distance_to_segment(a, b) == approx(1.0)
+
+    def test_get_distance_to_segment2(self):
+        a, b = R2Point(0.0, 0.0), R2Point(1.0, 0.0)
+        p = R2Point(0.5, -1.0)
+        assert p.get_distance_to_segment(a, b) == approx(1.0)
+
+    def test_get_distance_to_segment3(self):
+        a, b = R2Point(0.0, 0.0), R2Point(1.0, 0.0)
+        p = R2Point(0.5, 0.5)
+        assert p.get_distance_to_segment(a, b) == approx(0.5)
+
+    def test_get_distance_to_segment4(self):
+        a, b = R2Point(0.0, 0.0), R2Point(1.0, 0.0)
+        p = R2Point(0.5, -0.5)
+        assert p.get_distance_to_segment(a, b) == approx(0.5)
+
+    def test_get_distance_to_segment5(self):
+        a, b = R2Point(0.0, 0.0), R2Point(1.0, 0.0)
+        p = R2Point(0.5, 0.0)
+        assert p.get_distance_to_segment(a, b) == approx(0.0)
+
+    def test_get_distance_to_segment6(self):
+        a, b = R2Point(0.0, 0.0), R2Point(0.0, 1.0)
+        p = R2Point(1.0, 1.0)
+        assert p.get_distance_to_segment(a, b) == approx(1.0)
+
+    def test_get_distance_to_segment7(self):
+        a, b = R2Point(0.0, 0.0), R2Point(0.0, 1.0)
+        p = R2Point(-1.0, 1.0)
+        assert p.get_distance_to_segment(a, b) == approx(1.0)
+
+    def test_get_distance_to_segment8(self):
+        a, b = R2Point(0.0, 0.0), R2Point(0.0, 1.0)
+        p = R2Point(0.0, 0.5)
+        assert p.get_distance_to_segment(a, b) == approx(0.0)
